@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ES100 - Inteligencia Estratégica v5.1</title>
+    <title>ES100 - Inteligencia Estratégica v5.2</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         :root { --bg: #1a1005; --panel: #2b1d0e; --text: #e7d1b1; --accent: #ffb74d; --highlight: #e040fb; }
@@ -34,7 +34,7 @@
         .border-es { border: 2px solid gold; padding: 2px; border-radius: 3px; color: gold; font-size: 9px; }
         .border-lat { border: 2px solid cyan; padding: 2px; border-radius: 3px; color: cyan; font-size: 9px; }
 
-        .player-highlight { filter: drop-shadow(0 0 10px var(--highlight)); transform: scale(1.3); z-index: 1000 !important; }
+        .player-highlight { filter: drop-shadow(0 0 10px var(--highlight)); transform: scale(1.3) !important; z-index: 1000 !important; }
         .player-highlight div { background: var(--highlight) !important; border-color: white !important; }
 
         #bbcode-output { background: #1a0f00; color: #ffb74d; height: 120px; font-size: 10px; margin-top: 10px; border: 1px dashed #ffb74d; }
@@ -43,7 +43,7 @@
 <body>
 <div id="wrapper">
     <div id="sidebar">
-        <h2 style="text-align:center; color: var(--accent); margin:0 0 10px 0; font-size: 20px;">INTELIGENCIA ES100 v5.1</h2>
+        <h2 style="text-align:center; color: var(--accent); margin:0 0 10px 0; font-size: 20px;">INTELIGENCIA ES100 v5.2</h2>
 
         <div class="section">
             <h3>1. Carga de Datos</h3>
@@ -81,7 +81,7 @@
             <select id="unitSpeed" class="btn" style="background:#1a0f00; color:white;">
                 <option value="30" data-unit="ram">Ariete/Cata (30 m/c)</option>
                 <option value="35" data-unit="snob">Noble (35 m/c)</option>
-                <option value="18" data-unit="axe">Infantería (18 m/c)</option>
+                <option value="18" data-unit="axe">Hachas/Lanzas (18 m/c)</option>
                 <option value="10" data-unit="light">Ligeras (10 m/c)</option>
             </select>
             <div style="display:flex; gap:5px;">
@@ -108,78 +108,71 @@
     let markersMap = {}; 
     let activeHighlightPlayer = null;
 
-    // Función de inicio mejorada
     function initMap() {
         if (map) return;
-        
-        console.log("Iniciando mapa...");
-        map = L.map('map', { 
-            crs: L.CRS.Simple, 
-            minZoom: -2, 
-            maxZoom: 4, 
-            attributionControl: false 
-        });
-        
+        map = L.map('map', { crs: L.CRS.Simple, minZoom: -2, maxZoom: 4, attributionControl: false });
         map.setView([-500, 500], 0); 
         layerMain.addTo(map);
-
         for(let i=0; i<=1000; i+=100) {
             L.polyline([[0, i], [-1000, i]], {color: '#332211', weight: 1, opacity: 0.3}).addTo(map);
             L.polyline([[-i, 0], [-i, 1000]], {color: '#332211', weight: 1, opacity: 0.3}).addTo(map);
         }
-
         const now = new Date();
         document.getElementById('targetDate').value = now.toISOString().split('T')[0];
         document.getElementById('targetTime').value = "08:00:01";
-        
-        // El truco para que no salga negro es llamar a invalidateSize un poco después
-        setTimeout(() => {
-            map.invalidateSize();
-            console.log("Mapa redimensionado.");
-        }, 500);
+        setTimeout(() => { map.invalidateSize(); }, 600);
     }
 
     function loadData() {
         const eText = document.getElementById('enemyBB').value;
         const aText = document.getElementById('allyBB').value;
         enemyData = []; allyData = [];
+        
+        // El secreto: Separamos la tabla por filas [*]
         const rows = eText.split(/\[\*\]|\[\*\*\]/);
 
         rows.forEach(r => {
+            // Buscamos todas las coordenadas en esta fila
             const coordRegex = /(\d{1,3})[|](\d{1,3})/g;
-            let matches = [];
+            let coordsInRow = [];
             let match;
             while ((match = coordRegex.exec(r)) !== null) {
-                matches.push({ x: parseInt(match[1]), y: parseInt(match[2]), index: match.index, full: match[0] });
+                coordsInRow.push({ x: parseInt(match[1]), y: parseInt(match[2]), raw: match[0] });
             }
 
-            if (matches.length > 0) {
+            if (coordsInRow.length > 0) {
                 const lowRow = r.toLowerCase();
-                const isLat = lowRow.includes('lat') || lowRow.includes('mexico') || lowRow.includes('argentina') || lowRow.includes('guada');
-                const isES = lowRow.includes('español') || lowRow.includes(' es ') || lowRow.includes('🇪🇸');
+                
+                // Inteligencia Compartida por Fila
+                const isLat = lowRow.includes('lat') || lowRow.includes('mexico') || lowRow.includes('argentina') || lowRow.includes('guada') || lowRow.includes('latino');
+                const isES = lowRow.includes('español') || lowRow.includes(' es ') || lowRow.includes('🇪🇸') || lowRow.includes('españa');
+                
                 let playerMatch = r.match(/\[player\](.*?)\[\/player\]/);
                 let playerName = playerMatch ? playerMatch[1] : "Desconocido";
 
-                matches.forEach((m, i) => {
-                    let nextIdx = matches[i+1] ? matches[i+1].index : r.length;
-                    let segment = r.substring(m.index + m.full.length, nextIdx).trim();
-                    let lowSegment = segment.toLowerCase();
+                // Extraemos el horario de las columnas de la fila
+                let horario = "No especificado";
+                let hourMatch = r.match(/horario:\s*([^\n|\[]+)/i);
+                if (hourMatch) horario = hourMatch[1].trim();
 
-                    let horario = "No especificado";
-                    let hourMatch = segment.match(/horario:\s*([^\n|\[]+)/i);
-                    if (hourMatch) horario = hourMatch[1].trim();
-
-                    let cleanNote = segment.replace(/\[\/coord\]|\[\/player\]|\[|\]/g, '').trim();
+                // Aplicar la inteligencia a CADA pueblo de esa fila
+                coordsInRow.forEach(c => {
+                    // Nota específica del pueblo (buscamos texto justo después de su coord)
+                    let startIdx = r.indexOf(c.raw);
+                    let puebloSubtext = r.substring(startIdx).split(/\d{1,3}[|]\d{1,3}/)[1] || "";
+                    let lowSubtext = puebloSubtext.toLowerCase();
 
                     enemyData.push({
                         id: Math.random().toString(36).substr(2, 5),
-                        x: m.x, y: m.y,
+                        x: c.x, y: c.y,
                         player: playerName,
-                        isOff: lowSegment.includes('off') || lowSegment.includes('hacha') || lowSegment.includes('gorda'),
-                        isDef: lowSegment.includes('def') || lowSegment.includes('apoyo'),
-                        isES: isES, isLat: isLat,
+                        // El tipo (OFF/DEF) es específico del pueblo, pero la nacionalidad y horario son compartidos
+                        isOff: lowSubtext.includes('off') || lowSubtext.includes('hacha') || lowSubtext.includes('gorda') || lowSubtext.includes('ataque'),
+                        isDef: lowSubtext.includes('def') || lowSubtext.includes('apoyo') || lowSubtext.includes('deff'),
+                        isES: isES, 
+                        isLat: isLat,
                         horario: horario,
-                        note: cleanNote
+                        note: r.replace(/\[.*?\]/g, '').trim() // Nota completa para contexto
                     });
                 });
             }
@@ -209,10 +202,13 @@
                 iconSize: [22, 22]
             });
             let marker = L.marker([-v.y, v.x], {icon: icon}).bindPopup(`
-                <b>${v.x}|${v.y}</b><br>
-                <b>Jugador:</b> ${v.player}<br>
-                <b style="color:#ffb74d">HORARIO:</b> ${v.horario}<br>
-                <hr>${v.note}
+                <div style="color:#000">
+                    <b>${v.x}|${v.y}</b><br>
+                    <b>Jugador:</b> ${v.player}<br>
+                    <b style="color:#e65100">HORARIO:</b> ${v.horario}<br>
+                    <hr>
+                    <div style="font-size:10px; max-height:80px; overflow-y:auto;">${v.note}</div>
+                </div>
             `).addTo(layerMain);
             
             if(!markersMap[v.player]) markersMap[v.player] = [];
@@ -220,7 +216,7 @@
         });
 
         allyData.forEach(v => {
-            const icon = L.divIcon({ className: 'c-icon', html: `<div style="background:#00ffff; width:10px; height:10px; border-radius:50%; border:1px solid white;"></div>` });
+            const icon = L.divIcon({ className: 'c-icon', html: `<div style="background:#00ffff; width:10px; height:10px; border-radius:50%; border:1px solid white; box-shadow: 0 0 5px cyan;"></div>` });
             L.marker([-v.y, v.x], {icon: icon}).addTo(layerMain);
         });
     }
@@ -294,7 +290,6 @@
         if (!sMode || !e.target.closest('#map')) return;
         sStart = map.mouseEventToLatLng(e);
         sRect = L.rectangle([sStart, sStart], {color: sMode==='origin'?'green':'red', weight: 2}).addTo(map);
-        
         function onMove(me) { if (sRect) sRect.setBounds([sStart, map.mouseEventToLatLng(me)]); }
         function onUp() {
             if (sMode === 'origin') { if(oArea) map.removeLayer(oArea); oArea = sRect; }
@@ -332,7 +327,6 @@
         document.getElementById('bbcode-output').value = finalBB;
     }
 
-    // Iniciar con múltiples intentos para asegurar carga
     document.addEventListener('DOMContentLoaded', initMap);
     window.addEventListener('load', initMap);
     setTimeout(initMap, 1000);
