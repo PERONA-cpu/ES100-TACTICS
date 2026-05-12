@@ -3,64 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ES100 - Inteligencia Estratégica v5.2</title>
+    <title>⚔️ ESTRATEGA MAESTRO ES100 - v15.0</title>
+    
+    <!-- Librerías Externas -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <style>
-        :root { --bg: #1a1005; --panel: #2b1d0e; --text: #e7d1b1; --accent: #ffb74d; --highlight: #e040fb; }
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background: #000; font-family: 'Segoe UI', sans-serif; color: var(--text); }
-        #wrapper { display: flex; width: 100vw; height: 100vh; position: fixed; top:0; left:0; }
-        
-        #sidebar { width: 450px; min-width: 450px; background: var(--panel); border-right: 2px solid #5e463a; display: flex; flex-direction: column; padding: 15px; box-sizing: border-box; overflow-y: auto; z-index: 100; }
-        #map-container { flex-grow: 1; position: relative; height: 100vh; background: #111; }
-        #map { height: 100%; width: 100%; background: #111; }
+        :root { 
+            --bg: #000000; 
+            --panel: #1a110a; 
+            --text: #e7d1b1; 
+            --accent: #ffb74d; 
+            --tw-border: #5e463a;
+            --btn-green: #1b5e20;
+            --btn-red: #b71c1c;
+            --btn-orange: #e65100;
+        }
 
-        .section { background: #3e2723; padding: 10px; border-radius: 6px; margin-bottom: 12px; border: 1px solid #7d5e3c; }
-        h3 { margin: 0 0 8px 0; font-size: 12px; color: var(--accent); text-transform: uppercase; border-bottom: 1px solid #7d5e3c; padding-bottom: 3px; }
-        
-        textarea, input, select { background: #1a0f00; color: #00ff00; border: 1px solid #7d5e3c; border-radius: 3px; padding: 5px; font-family: monospace; font-size: 11px; width: 100%; box-sizing: border-box; margin-bottom: 5px; }
-        .btn { width: 100%; padding: 8px; background: #8d6e63; color: white; border: none; font-weight: bold; cursor: pointer; border-radius: 4px; margin-top: 5px; }
-        .btn:hover { background: #a1887f; }
+        body, html { 
+            margin: 0; padding: 0; 
+            height: 100%; width: 100%; 
+            overflow: hidden; 
+            background: var(--bg); 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            color: var(--text); 
+        }
 
-        .search-results { max-height: 120px; overflow-y: auto; background: #1a0f00; border: 1px solid #7d5e3c; border-radius: 4px; margin-top: 5px; display: none; }
-        .search-item { padding: 6px; cursor: pointer; font-size: 11px; border-bottom: 1px solid #3e2723; transition: 0.2s; }
-        .search-item:hover { background: #3e2723; color: #ffb74d; }
+        #wrapper { display: flex; width: 100vw; height: 100vh; }
 
-        .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px; margin-top: 5px; }
-        .legend-item { display: flex; align-items: center; gap: 8px; background: #2b1d0e; padding: 4px; border-radius: 4px; }
-        
+        /* Estilo Sidebar */
+        #sidebar { 
+            width: 420px; 
+            min-width: 420px; 
+            background: var(--panel); 
+            border-right: 2px solid var(--tw-border); 
+            display: flex; 
+            flex-direction: column; 
+            padding: 15px; 
+            box-sizing: border-box; 
+            overflow-y: auto; 
+            z-index: 100; 
+        }
+
+        #sidebar::-webkit-scrollbar { width: 8px; }
+        #sidebar::-webkit-scrollbar-track { background: #0a0a0a; }
+        #sidebar::-webkit-scrollbar-thumb { background: var(--tw-border); border-radius: 4px; }
+
+        /* Estilo Mapa */
+        #map-container { flex-grow: 1; position: relative; background: #000; }
+        #map { height: 100%; width: 100%; background: #000 !important; }
+
+        /* Secciones y Formularios */
+        .section { 
+            background: #2b1d0e; 
+            padding: 12px; 
+            border-radius: 6px; 
+            margin-bottom: 15px; 
+            border: 1px solid #7d5e3c; 
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        h2 { text-align: center; color: var(--accent); margin: 0 0 15px 0; font-size: 22px; text-transform: uppercase; letter-spacing: 1px; }
+        h3 { margin: 0 0 8px 0; font-size: 13px; color: var(--accent); text-transform: uppercase; border-bottom: 1px solid #7d5e3c; padding-bottom: 3px; }
+
+        textarea, input, select { 
+            background: #000; 
+            color: #00ff00; 
+            border: 1px solid #7d5e3c; 
+            border-radius: 3px; 
+            padding: 8px; 
+            font-family: 'Courier New', monospace; 
+            font-size: 12px; 
+            width: 100%; 
+            box-sizing: border-box; 
+            margin-bottom: 8px; 
+        }
+
+        .btn { 
+            width: 100%; 
+            padding: 10px; 
+            background: #5d4037; 
+            color: white; 
+            border: none; 
+            font-weight: bold; 
+            cursor: pointer; 
+            border-radius: 4px; 
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .btn:hover { background: #8d6e63; filter: brightness(1.2); }
+        .btn-active { outline: 2px solid white; outline-offset: -3px; }
+
+        /* Leyenda */
+        .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px; }
+        .legend-item { display: flex; align-items: center; gap: 8px; background: #1a110a; padding: 5px; border-radius: 4px; border: 1px solid #5e463a; }
         .shape-off { width: 10px; height: 10px; background: red; transform: rotate(45deg); border: 1px solid white; }
         .shape-def { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 12px solid #2ecc71; }
-        .shape-none { width: 10px; height: 10px; background: white; border-radius: 50%; border: 1px solid #000; }
-        .border-es { border: 2px solid gold; padding: 2px; border-radius: 3px; color: gold; font-size: 9px; }
-        .border-lat { border: 2px solid cyan; padding: 2px; border-radius: 3px; color: cyan; font-size: 9px; }
+        .border-es { border: 2px solid #ffd700; color: #ffd700; padding: 1px 3px; font-weight: bold; box-shadow: 0 0 8px #ffd700; }
+        .border-lat { border: 2px solid #00ffff; color: #00ffff; padding: 1px 3px; font-weight: bold; box-shadow: 0 0 8px #00ffff; }
 
-        .player-highlight { filter: drop-shadow(0 0 10px var(--highlight)); transform: scale(1.3) !important; z-index: 1000 !important; }
-        .player-highlight div { background: var(--highlight) !important; border-color: white !important; }
+        /* Marcadores Mapa */
+        .v-icon-container { display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.8); box-sizing: border-box; }
+        .v-off { width: 14px; height: 14px; background: #ff0000; transform: rotate(45deg); border: 1px solid #fff; }
+        .v-def { width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 16px solid #00ff00; }
+        .v-ally { width: 12px; height: 12px; background: #00ffff; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 15px #00ffff; }
+        .v-manual { width: 12px; height: 12px; transform: rotate(45deg); border: 1px solid #fff; }
 
-        #bbcode-output { background: #1a0f00; color: #ffb74d; height: 120px; font-size: 10px; margin-top: 10px; border: 1px dashed #ffb74d; }
+        /* Resultados de Búsqueda */
+        .search-results { max-height: 150px; overflow-y: auto; background: #000; border: 1px solid #7d5e3c; border-radius: 4px; display: none; margin-bottom: 10px; }
+        .search-item { padding: 10px; cursor: pointer; font-size: 12px; border-bottom: 1px solid #3e2723; }
+        .search-item:hover { background: #3e2723; color: gold; }
+
+        #bbcode-output { background: #000; color: #ffb74d; height: 120px; font-size: 11px; margin-top: 10px; border: 1px dashed #ffb74d; }
     </style>
 </head>
 <body>
+
 <div id="wrapper">
     <div id="sidebar">
-        <h2 style="text-align:center; color: var(--accent); margin:0 0 10px 0; font-size: 20px;">INTELIGENCIA ES100 v5.2</h2>
+        <h2>INTELIGENCIA ES100</h2>
 
         <div class="section">
-            <h3>1. Carga de Datos</h3>
+            <h3>1. Carga de Inteligencia</h3>
             <textarea id="enemyBB" rows="3" placeholder="Pega tabla de enemigos..."></textarea>
-            <textarea id="allyBB" rows="2" placeholder="Pega coordenadas de tus pueblos..."></textarea>
-            <button class="btn" onclick="loadData()">ANALIZAR DATOS</button>
+            <textarea id="allyBB" rows="1" placeholder="Coordenadas aliados..."></textarea>
+            <button class="btn" onclick="loadData()">Analizar Inteligencia</button>
         </div>
 
         <div class="section">
-            <h3>2. Buscador de Jugadores</h3>
-            <input type="text" id="playerSearch" placeholder="Buscar jugador (resaltar pueblos)..." oninput="searchPlayer()">
+            <h3>2. Marcado Manual Masivo</h3>
+            <textarea id="manualBB" rows="2" placeholder="Lista coordenadas (500|500 501|501...)"></textarea>
+            <div style="display:flex; gap:5px; align-items:center;">
+                <input type="color" id="manualColor" value="#ff00ff" style="height:38px; width:100px; cursor:pointer;">
+                <button class="btn" style="margin:0; background: var(--btn-green);" onclick="addManualBulk()">Añadir Marcas</button>
+            </div>
+            <button class="btn" style="background: #444; font-size:10px; margin-top:8px;" onclick="clearManualMarkers()">Limpiar Marcas Manuales</button>
+        </div>
+
+        <div class="section">
+            <h3>3. Buscadores</h3>
+            <input type="text" id="playerSearch" placeholder="Buscar Jugador..." oninput="searchPlayer()">
             <div id="search-results-player" class="search-results"></div>
-        </div>
-
-        <div class="section">
-            <h3>3. Filtro de Horarios / Fakes</h3>
-            <input type="text" id="hourSearch" placeholder="Escribe hora (ej: 14:00) o 'fake'..." oninput="searchByHour()">
+            
+            <input type="text" id="hourSearch" placeholder="Filtro Hora (ej: 14:22)..." oninput="searchByHour()">
             <div id="search-results-hour" class="search-results"></div>
         </div>
 
@@ -69,112 +157,137 @@
             <div class="legend-grid">
                 <div class="legend-item"><div class="shape-off"></div> Pueblo OFF</div>
                 <div class="legend-item"><div class="shape-def"></div> Pueblo DEF</div>
-                <div class="legend-item"><div class="shape-none"></div> Sin Info</div>
-                <div class="legend-item"><div style="background:#00ffff; width:10px; height:10px; border-radius:50%;"></div> Aliado</div>
+                <div class="legend-item"><div style="background:#00ffff; width:10px; height:10px; border-radius:50%; border:1px solid white;"></div> Aliado</div>
                 <div class="legend-item"><span class="border-es">ORO</span> Español</div>
                 <div class="legend-item"><span class="border-lat">CIAN</span> Latino</div>
             </div>
         </div>
 
         <div class="section">
-            <h3>5. Planificador Masivo</h3>
-            <select id="unitSpeed" class="btn" style="background:#1a0f00; color:white;">
-                <option value="30" data-unit="ram">Ariete/Cata (30 m/c)</option>
-                <option value="35" data-unit="snob">Noble (35 m/c)</option>
-                <option value="18" data-unit="axe">Hachas/Lanzas (18 m/c)</option>
-                <option value="10" data-unit="light">Ligeras (10 m/c)</option>
+            <h3>5. Planificador de Ataque</h3>
+            <select id="unitSpeed">
+                <option value="30" data-tag="ram">Ariete/Cata (30 m/c)</option>
+                <option value="35" data-tag="snob">Noble (35 m/c)</option>
+                <option value="18" data-tag="axe">Hachas/Lanzas (18 m/c)</option>
+                <option value="10" data-tag="light">Ligeras (10 m/c)</option>
             </select>
-            <div style="display:flex; gap:5px;">
-                <button class="btn" style="background:#388e3c" onclick="setSelectMode('origin')">SEL. ALIADOS</button>
-                <button class="btn" style="background:#d32f2f" onclick="setSelectMode('target')">SEL. OBJETIVOS</button>
+            <div style="display:flex; gap:5px; margin-bottom:8px;">
+                <button class="btn" style="background: var(--btn-green)" id="btn-origin" onclick="setSelectMode('origin')">Sel. Origen</button>
+                <button class="btn" style="background: var(--btn-red)" id="btn-target" onclick="setSelectMode('target')">Sel. Objetivos</button>
             </div>
-            <div style="display:flex; gap:5px; margin-top:5px;">
-                <button class="btn" style="background:#ef6c00; flex:2;" onclick="generateMassiveOrders()">GENERAR ÓRDENES</button>
-                <button class="btn" style="background:#b71c1c; flex:1;" onclick="clearSelectedFromMap()">BORRAR SEL.</button>
-            </div>
-            <div style="display:flex; gap:5px; margin-top:10px;">
+            <div style="display:flex; gap:5px; margin-bottom:8px;">
                 <input type="date" id="targetDate">
                 <input type="time" id="targetTime" step="1">
             </div>
-            <textarea id="bbcode-output" readonly placeholder="BBCode para el foro..."></textarea>
+            <button class="btn" style="background: var(--accent); color:black;" onclick="generateMassiveOrders()">Generar Órdenes BBCode</button>
+            
+            <textarea id="bbcode-output" readonly placeholder="Resultados aquí..."></textarea>
+            <button class="btn" style="background: #2e7d32; margin-top:5px;" onclick="copyBB()">Copiar al Portapapeles</button>
+            <button class="btn" style="background: #555; margin-top:5px;" onclick="clearSelectedAreas()">Borrar Selección Mapa</button>
         </div>
     </div>
-    <div id="map-container"><div id="map"></div></div>
+
+    <div id="map-container">
+        <div id="map"></div>
+    </div>
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    let map, enemyData = [], allyData = [], layerMain = L.layerGroup(), oArea = null, tArea = null;
-    let markersMap = {}; 
-    let activeHighlightPlayer = null;
+    let map, enemyData = [], allyData = [], manualMarkers = [], layerMain = L.layerGroup();
+    let markersMap = {}, activeHighlightPlayer = null;
+    let sMode = null, sStart = null, sRect = null, oArea = null, tArea = null;
 
-    function initMap() {
-        if (map) return;
-        map = L.map('map', { crs: L.CRS.Simple, minZoom: -2, maxZoom: 4, attributionControl: false });
-        map.setView([-500, 500], 0); 
+    // Inicialización
+    window.onload = function() {
+        map = L.map('map', { 
+            crs: L.CRS.Simple, 
+            minZoom: 0, 
+            maxZoom: 5, 
+            attributionControl: false 
+        }).setView([-450, 450], 1); 
+
         layerMain.addTo(map);
+
+        // Cuadrícula táctica
         for(let i=0; i<=1000; i+=100) {
-            L.polyline([[0, i], [-1000, i]], {color: '#332211', weight: 1, opacity: 0.3}).addTo(map);
-            L.polyline([[-i, 0], [-i, 1000]], {color: '#332211', weight: 1, opacity: 0.3}).addTo(map);
+            L.polyline([[0, i], [-1000, i]], {color: '#222', weight: 1, opacity: 0.5}).addTo(map);
+            L.polyline([[-i, 0], [-i, 1000]], {color: '#222', weight: 1, opacity: 0.5}).addTo(map);
         }
+
+        // Set default date/time
         const now = new Date();
         document.getElementById('targetDate').value = now.toISOString().split('T')[0];
-        document.getElementById('targetTime').value = "08:00:01";
-        setTimeout(() => { map.invalidateSize(); }, 600);
+        document.getElementById('targetTime').value = "08:00:00";
+
+        // Eventos de ratón para selección masiva
+        map.on('mousedown', (e) => {
+            if (!sMode) return;
+            sStart = e.latlng;
+            sRect = L.rectangle([sStart, sStart], {
+                color: sMode === 'origin' ? '#00ff00' : '#ff0000', 
+                weight: 3, 
+                fillOpacity: 0.2 
+            }).addTo(map);
+            map.on('mousemove', onMouseMove);
+        });
+
+        map.on('mouseup', onMouseUp);
+    };
+
+    function onMouseMove(e) { if (sRect) sRect.setBounds([sStart, e.latlng]); }
+
+    function onMouseUp() {
+        if (!sMode) return;
+        if (sMode === 'origin') { if(oArea) map.removeLayer(oArea); oArea = sRect; }
+        else { if(tArea) map.removeLayer(tArea); tArea = sRect; }
+        sRect = null; sMode = null; 
+        map.dragging.enable(); 
+        map.off('mousemove', onMouseMove);
+        document.getElementById('btn-origin').classList.remove('btn-active');
+        document.getElementById('btn-target').classList.remove('btn-active');
     }
 
+    function setSelectMode(m) { 
+        sMode = m; 
+        map.dragging.disable(); 
+        document.getElementById('btn-origin').classList.toggle('btn-active', m === 'origin');
+        document.getElementById('btn-target').classList.toggle('btn-active', m === 'target');
+    }
+
+    function clearSelectedAreas() {
+        if(oArea) { map.removeLayer(oArea); oArea = null; }
+        if(tArea) { map.removeLayer(tArea); tArea = null; }
+    }
+
+    function timeToMinutes(t) {
+        let m = t.match(/(\d{1,2}):(\d{2})/);
+        return m ? parseInt(m[1]) * 60 + parseInt(m[2]) : null;
+    }
+
+    // Procesamiento de datos
     function loadData() {
         const eText = document.getElementById('enemyBB').value;
         const aText = document.getElementById('allyBB').value;
-        enemyData = []; allyData = [];
-        
-        // El secreto: Separamos la tabla por filas [*]
-        const rows = eText.split(/\[\*\]|\[\*\*\]/);
+        enemyData = []; allyData = []; markersMap = {};
 
+        const rows = eText.split(/\[\*\]|\[\*\*\]/);
         rows.forEach(r => {
-            // Buscamos todas las coordenadas en esta fila
+            if (r.length < 5) return;
+            let pMatch = r.match(/\[player\](.*?)\[\/player\]/i);
+            let pName = pMatch ? pMatch[1] : "Desconocido";
+            const lowRow = r.toLowerCase();
+            const isLat = lowRow.includes('latino') || lowRow.includes('mexic') || lowRow.includes('argentin');
+            const isES = lowRow.includes('español') || lowRow.includes('oro') || lowRow.includes('españa');
+            const detectedHours = r.match(/(\d{1,2}:\d{2})/g) || [];
+            
             const coordRegex = /(\d{1,3})[|](\d{1,3})/g;
-            let coordsInRow = [];
             let match;
             while ((match = coordRegex.exec(r)) !== null) {
-                coordsInRow.push({ x: parseInt(match[1]), y: parseInt(match[2]), raw: match[0] });
-            }
-
-            if (coordsInRow.length > 0) {
-                const lowRow = r.toLowerCase();
-                
-                // Inteligencia Compartida por Fila
-                const isLat = lowRow.includes('lat') || lowRow.includes('mexico') || lowRow.includes('argentina') || lowRow.includes('guada') || lowRow.includes('latino');
-                const isES = lowRow.includes('español') || lowRow.includes(' es ') || lowRow.includes('🇪🇸') || lowRow.includes('españa');
-                
-                let playerMatch = r.match(/\[player\](.*?)\[\/player\]/);
-                let playerName = playerMatch ? playerMatch[1] : "Desconocido";
-
-                // Extraemos el horario de las columnas de la fila
-                let horario = "No especificado";
-                let hourMatch = r.match(/horario:\s*([^\n|\[]+)/i);
-                if (hourMatch) horario = hourMatch[1].trim();
-
-                // Aplicar la inteligencia a CADA pueblo de esa fila
-                coordsInRow.forEach(c => {
-                    // Nota específica del pueblo (buscamos texto justo después de su coord)
-                    let startIdx = r.indexOf(c.raw);
-                    let puebloSubtext = r.substring(startIdx).split(/\d{1,3}[|]\d{1,3}/)[1] || "";
-                    let lowSubtext = puebloSubtext.toLowerCase();
-
-                    enemyData.push({
-                        id: Math.random().toString(36).substr(2, 5),
-                        x: c.x, y: c.y,
-                        player: playerName,
-                        // El tipo (OFF/DEF) es específico del pueblo, pero la nacionalidad y horario son compartidos
-                        isOff: lowSubtext.includes('off') || lowSubtext.includes('hacha') || lowSubtext.includes('gorda') || lowSubtext.includes('ataque'),
-                        isDef: lowSubtext.includes('def') || lowSubtext.includes('apoyo') || lowSubtext.includes('deff'),
-                        isES: isES, 
-                        isLat: isLat,
-                        horario: horario,
-                        note: r.replace(/\[.*?\]/g, '').trim() // Nota completa para contexto
-                    });
-                });
+                let x = parseInt(match[1]), y = parseInt(match[2]);
+                let textAfter = r.substring(match.index, match.index + 120).toLowerCase();
+                let isOff = textAfter.includes('off') || textAfter.includes('ataque') || textAfter.includes('gorda');
+                let isDef = textAfter.includes('def') || textAfter.includes('apoyo') || textAfter.includes('deff');
+                enemyData.push({ x, y, player: pName, isOff, isDef, isES, isLat, detectedHours, note: r.replace(/\[.*?\]/g, '').trim() });
             }
         });
 
@@ -183,153 +296,125 @@
         renderMarkers();
     }
 
+    function addManualBulk() {
+        const text = document.getElementById('manualBB').value;
+        const color = document.getElementById('manualColor').value;
+        const matches = [...text.matchAll(/(\d{1,3})[|](\d{1,3})/g)];
+        matches.forEach(m => { manualMarkers.push({ x: parseInt(m[1]), y: parseInt(m[2]), color: color }); });
+        document.getElementById('manualBB').value = "";
+        renderMarkers();
+    }
+
+    function clearManualMarkers() { manualMarkers = []; renderMarkers(); }
+
     function renderMarkers() {
         layerMain.clearLayers();
-        markersMap = {}; 
         enemyData.forEach(v => {
-            let shape = '<div class="shape-none"></div>';
-            if(v.isOff) shape = '<div class="shape-off"></div>';
-            else if(v.isDef) shape = '<div class="shape-def"></div>';
-
-            let bCol = v.isES ? 'gold' : (v.isLat ? 'cyan' : 'transparent');
-            let bStyle = (v.isES || v.isLat) ? `border: 3px solid ${bCol}; border-radius: 4px; padding: 2px;` : '';
-
-            let highlightClass = (activeHighlightPlayer === v.player) ? 'player-highlight' : '';
-
-            const icon = L.divIcon({
-                className: `c-icon ${highlightClass}`,
-                html: `<div style="${bStyle} display:flex; align-items:center; justify-content:center;">${shape}</div>`,
-                iconSize: [22, 22]
+            let shape = '<div style="width:10px;height:10px;background:white;border-radius:2px;"></div>';
+            if(v.isOff) shape = '<div class="v-off"></div>';
+            else if(v.isDef) shape = '<div class="v-def"></div>';
+            let bCol = v.isES ? '#ffd700' : (v.isLat ? '#00ffff' : 'transparent');
+            let hlt = (activeHighlightPlayer === v.player) ? 'outline: 4px solid white; outline-offset: 4px; z-index: 1000;' : '';
+            const icon = L.divIcon({ 
+                className: 'v-icon', 
+                html: `<div class="v-icon-container" style="border: ${v.isES||v.isLat?'4px':'1.5px'} solid ${bCol}; border-radius:5px; padding:4px; ${hlt}">${shape}</div>`, 
+                iconSize: [32, 32] 
             });
-            let marker = L.marker([-v.y, v.x], {icon: icon}).bindPopup(`
-                <div style="color:#000">
-                    <b>${v.x}|${v.y}</b><br>
-                    <b>Jugador:</b> ${v.player}<br>
-                    <b style="color:#e65100">HORARIO:</b> ${v.horario}<br>
-                    <hr>
-                    <div style="font-size:10px; max-height:80px; overflow-y:auto;">${v.note}</div>
-                </div>
-            `).addTo(layerMain);
-            
+            L.marker([-v.y, v.x], {icon}).bindPopup(`<b>${v.player}</b> [${v.x}|${v.y}]<hr>${v.detectedHours.join(', ')}`).addTo(layerMain);
             if(!markersMap[v.player]) markersMap[v.player] = [];
-            markersMap[v.player].push(marker);
+            markersMap[v.player].push({x: v.x, y: v.y});
         });
-
+        manualMarkers.forEach(v => {
+            const icon = L.divIcon({ 
+                className: 'v-icon', 
+                html: `<div class="v-icon-container" style="border: 2.5px solid ${v.color}; border-radius:4px; padding:4px;"><div class="v-manual" style="background:${v.color}"></div></div>`, 
+                iconSize: [30, 30] 
+            });
+            L.marker([-v.y, v.x], {icon}).addTo(layerMain);
+        });
         allyData.forEach(v => {
-            const icon = L.divIcon({ className: 'c-icon', html: `<div style="background:#00ffff; width:10px; height:10px; border-radius:50%; border:1px solid white; box-shadow: 0 0 5px cyan;"></div>` });
-            L.marker([-v.y, v.x], {icon: icon}).addTo(layerMain);
+            const icon = L.divIcon({ className: 'v-icon', html: `<div class="v-ally"></div>`, iconSize: [18, 18] });
+            L.marker([-v.y, v.x], {icon}).addTo(layerMain);
+        });
+    }
+
+    // Funciones de Búsqueda
+    function searchByHour() {
+        const q = document.getElementById('hourSearch').value;
+        const res = document.getElementById('search-results-hour');
+        let qM = timeToMinutes(q);
+        if (qM === null) { res.style.display = 'none'; return; }
+        res.innerHTML = ''; res.style.display = 'block';
+        let found = [];
+        enemyData.forEach(e => {
+            e.detectedHours.forEach(h => {
+                if (Math.abs(timeToMinutes(h) - qM) <= 60) {
+                    if (!found.some(x => x.name === e.player)) found.push({name: e.player, time: h});
+                }
+            });
+        });
+        found.forEach(p => {
+            let d = document.createElement('div'); d.className='search-item'; 
+            d.innerHTML = `<span style="background:orange; color:black; padding:1px 4px; border-radius:2px; font-weight:bold; margin-right:5px;">${p.time}</span> ${p.name}`;
+            d.onclick = () => { activeHighlightPlayer=p.name; renderMarkers(); focusOnPlayer(p.name); };
+            res.appendChild(d);
         });
     }
 
     function searchPlayer() {
-        const query = document.getElementById('playerSearch').value.toLowerCase();
-        const resultsDiv = document.getElementById('search-results-player');
-        resultsDiv.innerHTML = '';
-        if (query.length < 2) { resultsDiv.style.display = 'none'; activeHighlightPlayer = null; renderMarkers(); return; }
-
-        const players = Object.keys(markersMap).filter(p => p.toLowerCase().includes(query));
-        if(players.length) {
-            resultsDiv.style.display = 'block';
-            players.forEach(p => {
-                let div = document.createElement('div');
-                div.className = 'search-item';
-                div.innerText = `${p} (${markersMap[p].length} pueblos)`;
-                div.onclick = () => { activeHighlightPlayer = p; renderMarkers(); focusOnPlayer(p); resultsDiv.style.display = 'none'; };
-                resultsDiv.appendChild(div);
-            });
-        } else { resultsDiv.style.display = 'none'; }
+        const q = document.getElementById('playerSearch').value.toLowerCase();
+        const res = document.getElementById('search-results-player');
+        if (q.length < 2) { res.style.display='none'; return; }
+        res.innerHTML = ''; res.style.display = 'block';
+        let ps = [...new Set(enemyData.map(e => e.player))].filter(p => p.toLowerCase().includes(q));
+        ps.forEach(p => {
+            let d = document.createElement('div'); d.className='search-item'; d.innerText=p;
+            d.onclick = () => { activeHighlightPlayer=p; renderMarkers(); focusOnPlayer(p); };
+            res.appendChild(d);
+        });
     }
 
-    function searchByHour() {
-        const query = document.getElementById('hourSearch').value.toLowerCase();
-        const resultsDiv = document.getElementById('search-results-hour');
-        resultsDiv.innerHTML = '';
-        if (query.length < 2) { resultsDiv.style.display = 'none'; return; }
-
-        const matched = enemyData.filter(v => v.horario.toLowerCase().includes(query) || v.note.toLowerCase().includes(query));
-        const uniquePlayers = [...new Set(matched.map(v => v.player))];
-
-        if(uniquePlayers.length) {
-            resultsDiv.style.display = 'block';
-            uniquePlayers.forEach(p => {
-                let div = document.createElement('div');
-                div.className = 'search-item';
-                div.innerText = `${p} (Activo en: ${query})`;
-                div.onclick = () => { activeHighlightPlayer = p; renderMarkers(); focusOnPlayer(p); resultsDiv.style.display = 'none'; };
-                resultsDiv.appendChild(div);
-            });
-        } else { resultsDiv.style.display = 'none'; }
+    function focusOnPlayer(n) {
+        let p = enemyData.find(e => e.player === n);
+        if (p) map.setView([-p.y, p.x], 3);
     }
 
-    function focusOnPlayer(name) {
-        const markers = markersMap[name];
-        if(!markers) return;
-        const group = new L.featureGroup(markers);
-        map.fitBounds(group.getBounds().pad(0.5));
-        markers[0].openPopup();
-    }
-
-    function clearSelectedFromMap() {
-        if (oArea) {
-            const b = oArea.getBounds();
-            allyData = allyData.filter(v => !(v.x >= b.getWest() && v.x <= b.getEast() && v.y >= Math.abs(b.getNorth()) && v.y <= Math.abs(b.getSouth())));
-            map.removeLayer(oArea); oArea = null;
-        }
-        if (tArea) {
-            const b = tArea.getBounds();
-            enemyData = enemyData.filter(v => !(v.x >= b.getWest() && v.x <= b.getEast() && v.y >= Math.abs(b.getNorth()) && v.y <= Math.abs(b.getSouth())));
-            map.removeLayer(tArea); tArea = null;
-        }
-        renderMarkers();
-    }
-
-    let sMode = null, sStart = null, sRect = null;
-    function setSelectMode(m) { sMode = m; map.dragging.disable(); }
-
-    document.addEventListener('mousedown', (e) => {
-        if (!sMode || !e.target.closest('#map')) return;
-        sStart = map.mouseEventToLatLng(e);
-        sRect = L.rectangle([sStart, sStart], {color: sMode==='origin'?'green':'red', weight: 2}).addTo(map);
-        function onMove(me) { if (sRect) sRect.setBounds([sStart, map.mouseEventToLatLng(me)]); }
-        function onUp() {
-            if (sMode === 'origin') { if(oArea) map.removeLayer(oArea); oArea = sRect; }
-            else { if(tArea) map.removeLayer(tArea); tArea = sRect; }
-            sMode = null; map.dragging.enable();
-            document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp);
-        }
-        document.addEventListener('mousemove', onMove); document.addEventListener('mouseup', onUp);
-    });
-
+    // Generador de Órdenes
     function generateMassiveOrders() {
-        if (!oArea || !tArea) return alert("Selecciona Origen y Destino.");
+        if (!oArea || !tArea) return alert("Dibuja las áreas de Origen y Objetivo en el mapa.");
         const speed = parseFloat(document.getElementById('unitSpeed').value);
-        const unit = document.getElementById('unitSpeed').options[document.getElementById('unitSpeed').selectedIndex].getAttribute('data-unit');
+        const unitTag = document.getElementById('unitSpeed').options[document.getElementById('unitSpeed').selectedIndex].getAttribute('data-tag');
+        const targetDT = new Date((document.getElementById('targetDate').value + ' ' + document.getElementById('targetTime').value).replace(/-/g, "/"));
         const bO = oArea.getBounds(), bT = tArea.getBounds();
+        
         const targets = enemyData.filter(v => v.x >= bT.getWest() && v.x <= bT.getEast() && v.y >= Math.abs(bT.getNorth()) && v.y <= Math.abs(bT.getSouth()));
         const sources = allyData.filter(v => v.x >= bO.getWest() && v.x <= bO.getEast() && v.y >= Math.abs(bO.getNorth()) && v.y <= Math.abs(bO.getSouth()));
 
-        if (!targets.length || !sources.length) return alert("Áreas vacías.");
+        if(targets.length === 0 || sources.length === 0) return alert("No hay pueblos en las áreas seleccionadas.");
 
-        const targetDT = new Date((document.getElementById('targetDate').value + ' ' + document.getElementById('targetTime').value).replace(/-/g, "/"));
         let finalBB = "";
-
-        sources.forEach(s => {
-            finalBB += `[size=12][b]Plan for Ally:[/b] [coord]${s.x}|${s.y}[/coord][/size]\n`;
-            finalBB += `[table][**]Unit[||]Target[||]Launch Time[||]Command[/**]\n`;
-            targets.forEach(t => {
+        targets.forEach(t => {
+            finalBB += `[size=12][b]Plan for:[/b] [coord]${t.x}|${t.y}[/coord]\n`;
+            finalBB += `[b]Landing Time:[/b] ${targetDT.toLocaleString()}[/size]\n\n`;
+            finalBB += `[table][**]Unit[||]From[||]Priority[||]Launch Time[||]Command[||]Status[/**]\n`;
+            sources.forEach(s => {
                 const dist = Math.sqrt(Math.pow(t.x - s.x, 2) + Math.pow(t.y - s.y, 2));
                 const launch = new Date(targetDT.getTime() - (dist * speed * 60 * 1000));
                 const link = `https://es100.guerrastribales.es/game.php?screen=place&x=${t.x}&y=${t.y}`;
-                finalBB += `[*][unit]${unit}[/unit][|] [coord]${t.x}|${t.y}[/coord] [|]${launch.toLocaleString()}[|][url=${link}]Send[/url]\n`;
+                finalBB += `[*][unit]${unitTag}[/unit][|] [coord]${s.x}|${s.y}[/coord] [|][b][color=#ff0000][/color][/b][|]${launch.toLocaleString()}[|][url=${link}]Send[/url][|]\n`;
             });
             finalBB += `[/table]\n\n`;
         });
         document.getElementById('bbcode-output').value = finalBB;
     }
 
-    document.addEventListener('DOMContentLoaded', initMap);
-    window.addEventListener('load', initMap);
-    setTimeout(initMap, 1000);
+    function copyBB() {
+        const copyText = document.getElementById("bbcode-output");
+        copyText.select();
+        document.execCommand("copy");
+        alert("BBCode copiado.");
+    }
 </script>
+
 </body>
 </html>
