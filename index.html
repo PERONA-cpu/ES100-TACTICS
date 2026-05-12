@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ES100 - Centro de Inteligencia v5.0</title>
+    <title>ES100 - Inteligencia Estratégica v5.1</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         :root { --bg: #1a1005; --panel: #2b1d0e; --text: #e7d1b1; --accent: #ffb74d; --highlight: #e040fb; }
         body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background: #000; font-family: 'Segoe UI', sans-serif; color: var(--text); }
-        #wrapper { display: flex; width: 100vw; height: 100vh; }
+        #wrapper { display: flex; width: 100vw; height: 100vh; position: fixed; top:0; left:0; }
         
-        #sidebar { width: 450px; min-width: 450px; background: var(--panel); border-right: 2px solid #5e463a; display: flex; flex-direction: column; padding: 15px; box-sizing: border-box; overflow-y: auto; }
+        #sidebar { width: 450px; min-width: 450px; background: var(--panel); border-right: 2px solid #5e463a; display: flex; flex-direction: column; padding: 15px; box-sizing: border-box; overflow-y: auto; z-index: 100; }
         #map-container { flex-grow: 1; position: relative; height: 100vh; background: #111; }
-        #map { height: 100%; width: 100%; }
+        #map { height: 100%; width: 100%; background: #111; }
 
         .section { background: #3e2723; padding: 10px; border-radius: 6px; margin-bottom: 12px; border: 1px solid #7d5e3c; }
         h3 { margin: 0 0 8px 0; font-size: 12px; color: var(--accent); text-transform: uppercase; border-bottom: 1px solid #7d5e3c; padding-bottom: 3px; }
@@ -34,7 +34,6 @@
         .border-es { border: 2px solid gold; padding: 2px; border-radius: 3px; color: gold; font-size: 9px; }
         .border-lat { border: 2px solid cyan; padding: 2px; border-radius: 3px; color: cyan; font-size: 9px; }
 
-        /* Efecto de resaltado para jugador buscado */
         .player-highlight { filter: drop-shadow(0 0 10px var(--highlight)); transform: scale(1.3); z-index: 1000 !important; }
         .player-highlight div { background: var(--highlight) !important; border-color: white !important; }
 
@@ -44,7 +43,7 @@
 <body>
 <div id="wrapper">
     <div id="sidebar">
-        <h2 style="text-align:center; color: var(--accent); margin:0 0 10px 0; font-size: 20px;">INTELIGENCIA ES100 v5.0</h2>
+        <h2 style="text-align:center; color: var(--accent); margin:0 0 10px 0; font-size: 20px;">INTELIGENCIA ES100 v5.1</h2>
 
         <div class="section">
             <h3>1. Carga de Datos</h3>
@@ -109,18 +108,35 @@
     let markersMap = {}; 
     let activeHighlightPlayer = null;
 
+    // Función de inicio mejorada
     function initMap() {
         if (map) return;
-        map = L.map('map', { crs: L.CRS.Simple, minZoom: -2, maxZoom: 4, attributionControl: false });
-        map.setView([-500, 500], 0); layerMain.addTo(map);
+        
+        console.log("Iniciando mapa...");
+        map = L.map('map', { 
+            crs: L.CRS.Simple, 
+            minZoom: -2, 
+            maxZoom: 4, 
+            attributionControl: false 
+        });
+        
+        map.setView([-500, 500], 0); 
+        layerMain.addTo(map);
+
         for(let i=0; i<=1000; i+=100) {
             L.polyline([[0, i], [-1000, i]], {color: '#332211', weight: 1, opacity: 0.3}).addTo(map);
             L.polyline([[-i, 0], [-i, 1000]], {color: '#332211', weight: 1, opacity: 0.3}).addTo(map);
         }
+
         const now = new Date();
         document.getElementById('targetDate').value = now.toISOString().split('T')[0];
         document.getElementById('targetTime').value = "08:00:01";
-        setTimeout(() => map.invalidateSize(), 400);
+        
+        // El truco para que no salga negro es llamar a invalidateSize un poco después
+        setTimeout(() => {
+            map.invalidateSize();
+            console.log("Mapa redimensionado.");
+        }, 500);
     }
 
     function loadData() {
@@ -140,9 +156,186 @@
             if (matches.length > 0) {
                 const lowRow = r.toLowerCase();
                 const isLat = lowRow.includes('lat') || lowRow.includes('mexico') || lowRow.includes('argentina') || lowRow.includes('guada');
-                const isES = lowRow.includes('español') || lowRow.includes(' es ') || lowRow.includes('🇪🇸') || lowRow.includes('selena');
+                const isES = lowRow.includes('español') || lowRow.includes(' es ') || lowRow.includes('🇪🇸');
                 let playerMatch = r.match(/\[player\](.*?)\[\/player\]/);
                 let playerName = playerMatch ? playerMatch[1] : "Desconocido";
 
                 matches.forEach((m, i) => {
-                    let nextIdx = matches[i+1] ? m
+                    let nextIdx = matches[i+1] ? matches[i+1].index : r.length;
+                    let segment = r.substring(m.index + m.full.length, nextIdx).trim();
+                    let lowSegment = segment.toLowerCase();
+
+                    let horario = "No especificado";
+                    let hourMatch = segment.match(/horario:\s*([^\n|\[]+)/i);
+                    if (hourMatch) horario = hourMatch[1].trim();
+
+                    let cleanNote = segment.replace(/\[\/coord\]|\[\/player\]|\[|\]/g, '').trim();
+
+                    enemyData.push({
+                        id: Math.random().toString(36).substr(2, 5),
+                        x: m.x, y: m.y,
+                        player: playerName,
+                        isOff: lowSegment.includes('off') || lowSegment.includes('hacha') || lowSegment.includes('gorda'),
+                        isDef: lowSegment.includes('def') || lowSegment.includes('apoyo'),
+                        isES: isES, isLat: isLat,
+                        horario: horario,
+                        note: cleanNote
+                    });
+                });
+            }
+        });
+
+        const aMatches = [...aText.matchAll(/(\d{1,3})[|](\d{1,3})/g)];
+        aMatches.forEach(m => allyData.push({ x: parseInt(m[1]), y: parseInt(m[2]) }));
+        renderMarkers();
+    }
+
+    function renderMarkers() {
+        layerMain.clearLayers();
+        markersMap = {}; 
+        enemyData.forEach(v => {
+            let shape = '<div class="shape-none"></div>';
+            if(v.isOff) shape = '<div class="shape-off"></div>';
+            else if(v.isDef) shape = '<div class="shape-def"></div>';
+
+            let bCol = v.isES ? 'gold' : (v.isLat ? 'cyan' : 'transparent');
+            let bStyle = (v.isES || v.isLat) ? `border: 3px solid ${bCol}; border-radius: 4px; padding: 2px;` : '';
+
+            let highlightClass = (activeHighlightPlayer === v.player) ? 'player-highlight' : '';
+
+            const icon = L.divIcon({
+                className: `c-icon ${highlightClass}`,
+                html: `<div style="${bStyle} display:flex; align-items:center; justify-content:center;">${shape}</div>`,
+                iconSize: [22, 22]
+            });
+            let marker = L.marker([-v.y, v.x], {icon: icon}).bindPopup(`
+                <b>${v.x}|${v.y}</b><br>
+                <b>Jugador:</b> ${v.player}<br>
+                <b style="color:#ffb74d">HORARIO:</b> ${v.horario}<br>
+                <hr>${v.note}
+            `).addTo(layerMain);
+            
+            if(!markersMap[v.player]) markersMap[v.player] = [];
+            markersMap[v.player].push(marker);
+        });
+
+        allyData.forEach(v => {
+            const icon = L.divIcon({ className: 'c-icon', html: `<div style="background:#00ffff; width:10px; height:10px; border-radius:50%; border:1px solid white;"></div>` });
+            L.marker([-v.y, v.x], {icon: icon}).addTo(layerMain);
+        });
+    }
+
+    function searchPlayer() {
+        const query = document.getElementById('playerSearch').value.toLowerCase();
+        const resultsDiv = document.getElementById('search-results-player');
+        resultsDiv.innerHTML = '';
+        if (query.length < 2) { resultsDiv.style.display = 'none'; activeHighlightPlayer = null; renderMarkers(); return; }
+
+        const players = Object.keys(markersMap).filter(p => p.toLowerCase().includes(query));
+        if(players.length) {
+            resultsDiv.style.display = 'block';
+            players.forEach(p => {
+                let div = document.createElement('div');
+                div.className = 'search-item';
+                div.innerText = `${p} (${markersMap[p].length} pueblos)`;
+                div.onclick = () => { activeHighlightPlayer = p; renderMarkers(); focusOnPlayer(p); resultsDiv.style.display = 'none'; };
+                resultsDiv.appendChild(div);
+            });
+        } else { resultsDiv.style.display = 'none'; }
+    }
+
+    function searchByHour() {
+        const query = document.getElementById('hourSearch').value.toLowerCase();
+        const resultsDiv = document.getElementById('search-results-hour');
+        resultsDiv.innerHTML = '';
+        if (query.length < 2) { resultsDiv.style.display = 'none'; return; }
+
+        const matched = enemyData.filter(v => v.horario.toLowerCase().includes(query) || v.note.toLowerCase().includes(query));
+        const uniquePlayers = [...new Set(matched.map(v => v.player))];
+
+        if(uniquePlayers.length) {
+            resultsDiv.style.display = 'block';
+            uniquePlayers.forEach(p => {
+                let div = document.createElement('div');
+                div.className = 'search-item';
+                div.innerText = `${p} (Activo en: ${query})`;
+                div.onclick = () => { activeHighlightPlayer = p; renderMarkers(); focusOnPlayer(p); resultsDiv.style.display = 'none'; };
+                resultsDiv.appendChild(div);
+            });
+        } else { resultsDiv.style.display = 'none'; }
+    }
+
+    function focusOnPlayer(name) {
+        const markers = markersMap[name];
+        if(!markers) return;
+        const group = new L.featureGroup(markers);
+        map.fitBounds(group.getBounds().pad(0.5));
+        markers[0].openPopup();
+    }
+
+    function clearSelectedFromMap() {
+        if (oArea) {
+            const b = oArea.getBounds();
+            allyData = allyData.filter(v => !(v.x >= b.getWest() && v.x <= b.getEast() && v.y >= Math.abs(b.getNorth()) && v.y <= Math.abs(b.getSouth())));
+            map.removeLayer(oArea); oArea = null;
+        }
+        if (tArea) {
+            const b = tArea.getBounds();
+            enemyData = enemyData.filter(v => !(v.x >= b.getWest() && v.x <= b.getEast() && v.y >= Math.abs(b.getNorth()) && v.y <= Math.abs(b.getSouth())));
+            map.removeLayer(tArea); tArea = null;
+        }
+        renderMarkers();
+    }
+
+    let sMode = null, sStart = null, sRect = null;
+    function setSelectMode(m) { sMode = m; map.dragging.disable(); }
+
+    document.addEventListener('mousedown', (e) => {
+        if (!sMode || !e.target.closest('#map')) return;
+        sStart = map.mouseEventToLatLng(e);
+        sRect = L.rectangle([sStart, sStart], {color: sMode==='origin'?'green':'red', weight: 2}).addTo(map);
+        
+        function onMove(me) { if (sRect) sRect.setBounds([sStart, map.mouseEventToLatLng(me)]); }
+        function onUp() {
+            if (sMode === 'origin') { if(oArea) map.removeLayer(oArea); oArea = sRect; }
+            else { if(tArea) map.removeLayer(tArea); tArea = sRect; }
+            sMode = null; map.dragging.enable();
+            document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp);
+        }
+        document.addEventListener('mousemove', onMove); document.addEventListener('mouseup', onUp);
+    });
+
+    function generateMassiveOrders() {
+        if (!oArea || !tArea) return alert("Selecciona Origen y Destino.");
+        const speed = parseFloat(document.getElementById('unitSpeed').value);
+        const unit = document.getElementById('unitSpeed').options[document.getElementById('unitSpeed').selectedIndex].getAttribute('data-unit');
+        const bO = oArea.getBounds(), bT = tArea.getBounds();
+        const targets = enemyData.filter(v => v.x >= bT.getWest() && v.x <= bT.getEast() && v.y >= Math.abs(bT.getNorth()) && v.y <= Math.abs(bT.getSouth()));
+        const sources = allyData.filter(v => v.x >= bO.getWest() && v.x <= bO.getEast() && v.y >= Math.abs(bO.getNorth()) && v.y <= Math.abs(bO.getSouth()));
+
+        if (!targets.length || !sources.length) return alert("Áreas vacías.");
+
+        const targetDT = new Date((document.getElementById('targetDate').value + ' ' + document.getElementById('targetTime').value).replace(/-/g, "/"));
+        let finalBB = "";
+
+        sources.forEach(s => {
+            finalBB += `[size=12][b]Plan for Ally:[/b] [coord]${s.x}|${s.y}[/coord][/size]\n`;
+            finalBB += `[table][**]Unit[||]Target[||]Launch Time[||]Command[/**]\n`;
+            targets.forEach(t => {
+                const dist = Math.sqrt(Math.pow(t.x - s.x, 2) + Math.pow(t.y - s.y, 2));
+                const launch = new Date(targetDT.getTime() - (dist * speed * 60 * 1000));
+                const link = `https://es100.guerrastribales.es/game.php?screen=place&x=${t.x}&y=${t.y}`;
+                finalBB += `[*][unit]${unit}[/unit][|] [coord]${t.x}|${t.y}[/coord] [|]${launch.toLocaleString()}[|][url=${link}]Send[/url]\n`;
+            });
+            finalBB += `[/table]\n\n`;
+        });
+        document.getElementById('bbcode-output').value = finalBB;
+    }
+
+    // Iniciar con múltiples intentos para asegurar carga
+    document.addEventListener('DOMContentLoaded', initMap);
+    window.addEventListener('load', initMap);
+    setTimeout(initMap, 1000);
+</script>
+</body>
+</html>
