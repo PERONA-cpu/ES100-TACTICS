@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚔️ ESTRATEGA MAESTRO ES100 - v15.0</title>
+    <title>⚔️ ESTRATEGA MAESTRO ES100 - v18.0</title>
     
     <!-- Librerías Externas -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -32,10 +32,10 @@
 
         #wrapper { display: flex; width: 100vw; height: 100vh; }
 
-        /* Estilo Sidebar */
+        /* SIDEBAR PROFESIONAL */
         #sidebar { 
-            width: 420px; 
-            min-width: 420px; 
+            width: 450px; 
+            min-width: 450px; 
             background: var(--panel); 
             border-right: 2px solid var(--tw-border); 
             display: flex; 
@@ -50,11 +50,11 @@
         #sidebar::-webkit-scrollbar-track { background: #0a0a0a; }
         #sidebar::-webkit-scrollbar-thumb { background: var(--tw-border); border-radius: 4px; }
 
-        /* Estilo Mapa */
+        /* MAPA */
         #map-container { flex-grow: 1; position: relative; background: #000; }
         #map { height: 100%; width: 100%; background: #000 !important; }
 
-        /* Secciones y Formularios */
+        /* ESTILOS DE SECCIÓN */
         .section { 
             background: #2b1d0e; 
             padding: 12px; 
@@ -64,8 +64,8 @@
             box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
         }
 
-        h2 { text-align: center; color: var(--accent); margin: 0 0 15px 0; font-size: 22px; text-transform: uppercase; letter-spacing: 1px; }
-        h3 { margin: 0 0 8px 0; font-size: 13px; color: var(--accent); text-transform: uppercase; border-bottom: 1px solid #7d5e3c; padding-bottom: 3px; }
+        h2 { text-align: center; color: var(--accent); margin: 0 0 15px 0; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        h3 { margin: 0 0 8px 0; font-size: 12px; color: var(--accent); text-transform: uppercase; border-bottom: 1px solid #7d5e3c; padding-bottom: 3px; }
 
         textarea, input, select { 
             background: #000; 
@@ -74,7 +74,7 @@
             border-radius: 3px; 
             padding: 8px; 
             font-family: 'Courier New', monospace; 
-            font-size: 12px; 
+            font-size: 11px; 
             width: 100%; 
             box-sizing: border-box; 
             margin-bottom: 8px; 
@@ -95,29 +95,37 @@
         }
 
         .btn:hover { background: #8d6e63; filter: brightness(1.2); }
-        .btn-active { outline: 2px solid white; outline-offset: -3px; }
 
-        /* Leyenda */
+        /* RESUMEN Y ZONAS ACTIVAS */
+        #selection-summary { background: #1a0f00; border: 1px solid #ffb74d; border-radius: 4px; padding: 10px; margin-top: 8px; font-size: 11px; color: #00ff00; line-height: 1.4; display: none; }
+        #active-zones-list { margin-top: 8px; max-height: 120px; overflow-y: auto; }
+        .zone-item { display: flex; justify-content: space-between; align-items: center; background: #3e2723; padding: 5px 10px; border-radius: 3px; margin-bottom: 4px; font-size: 11px; border-left: 5px solid #ccc; }
+        .zone-del-btn { background: #b71c1c; color: white; border: none; padding: 3px 8px; border-radius: 3px; cursor: pointer; font-weight: bold; }
+
+        /* LEYENDA */
         .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px; }
         .legend-item { display: flex; align-items: center; gap: 8px; background: #1a110a; padding: 5px; border-radius: 4px; border: 1px solid #5e463a; }
         .shape-off { width: 10px; height: 10px; background: red; transform: rotate(45deg); border: 1px solid white; }
         .shape-def { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 12px solid #2ecc71; }
-        .border-es { border: 2px solid #ffd700; color: #ffd700; padding: 1px 3px; font-weight: bold; box-shadow: 0 0 8px #ffd700; }
-        .border-lat { border: 2px solid #00ffff; color: #00ffff; padding: 1px 3px; font-weight: bold; box-shadow: 0 0 8px #00ffff; }
+        .shape-none { width: 10px; height: 10px; background: white; border-radius: 2px; border: 1px solid #000; }
+        .border-es { border: 2px solid #ffd700; color: #ffd700; padding: 1px 3px; font-weight: bold; }
+        .border-lat { border: 2px solid #00ffff; color: #00ffff; padding: 1px 3px; font-weight: bold; }
 
-        /* Marcadores Mapa */
+        /* ICONOS TÁCTICOS */
         .v-icon-container { display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.8); box-sizing: border-box; }
-        .v-off { width: 14px; height: 14px; background: #ff0000; transform: rotate(45deg); border: 1px solid #fff; }
-        .v-def { width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 16px solid #00ff00; }
-        .v-ally { width: 12px; height: 12px; background: #00ffff; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 15px #00ffff; }
-        .v-manual { width: 12px; height: 12px; transform: rotate(45deg); border: 1px solid #fff; }
+        .v-off { width: 12px; height: 12px; background: #ff0000; transform: rotate(45deg); border: 1px solid #fff; }
+        .v-def { width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 13px solid #00ff00; }
+        .v-ally { width: 11px; height: 11px; background: #00ffff; border-radius: 50%; border: 1.5px solid #fff; box-shadow: 0 0 10px #00ffff; }
+        .v-none { width: 9px; height: 9px; background: #fff; border-radius: 1px; }
 
-        /* Resultados de Búsqueda */
-        .search-results { max-height: 150px; overflow-y: auto; background: #000; border: 1px solid #7d5e3c; border-radius: 4px; display: none; margin-bottom: 10px; }
-        .search-item { padding: 10px; cursor: pointer; font-size: 12px; border-bottom: 1px solid #3e2723; }
-        .search-item:hover { background: #3e2723; color: gold; }
+        /* BUSCADOR */
+        .search-results { max-height: 200px; overflow-y: auto; background: #000; border: 1px solid #7d5e3c; border-radius: 4px; display: none; margin-top: 2px; }
+        .search-item { padding: 10px; border-bottom: 1px solid #3e2723; }
+        .village-list { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+        .village-btn { background: #3e2723; color: #00ff00; font-size: 10px; padding: 3px 6px; border-radius: 3px; cursor: pointer; border: 1px solid #7d5e3c; }
+        .village-btn:hover { background: #5d4037; }
 
-        #bbcode-output { background: #000; color: #ffb74d; height: 120px; font-size: 11px; margin-top: 10px; border: 1px dashed #ffb74d; }
+        #bbcode-output { background: #000; color: #ffb74d; height: 100px; font-size: 11px; margin-top: 10px; border: 1px dashed #ffb74d; }
     </style>
 </head>
 <body>
@@ -126,16 +134,18 @@
     <div id="sidebar">
         <h2>INTELIGENCIA ES100</h2>
 
+        <!-- CARGA -->
         <div class="section">
-            <h3>1. Carga de Inteligencia</h3>
+            <h3>1. Carga de Inteligencia (Tablas)</h3>
             <textarea id="enemyBB" rows="3" placeholder="Pega tabla de enemigos..."></textarea>
             <textarea id="allyBB" rows="1" placeholder="Coordenadas aliados..."></textarea>
             <button class="btn" onclick="loadData()">Analizar Inteligencia</button>
         </div>
 
+        <!-- MANUAL -->
         <div class="section">
             <h3>2. Marcado Manual Masivo</h3>
-            <textarea id="manualBB" rows="2" placeholder="Lista coordenadas (500|500 501|501...)"></textarea>
+            <textarea id="manualBB" rows="2" placeholder="Pega lista de coordenadas..."></textarea>
             <div style="display:flex; gap:5px; align-items:center;">
                 <input type="color" id="manualColor" value="#ff00ff" style="height:38px; width:100px; cursor:pointer;">
                 <button class="btn" style="margin:0; background: var(--btn-green);" onclick="addManualBulk()">Añadir Marcas</button>
@@ -143,47 +153,55 @@
             <button class="btn" style="background: #444; font-size:10px; margin-top:8px;" onclick="clearManualMarkers()">Limpiar Marcas Manuales</button>
         </div>
 
+        <!-- BUSCADORES -->
         <div class="section">
             <h3>3. Buscadores</h3>
-            <input type="text" id="playerSearch" placeholder="Buscar Jugador..." oninput="searchPlayer()">
+            <input type="text" id="playerSearch" placeholder="Nombre del jugador..." oninput="searchPlayer()">
             <div id="search-results-player" class="search-results"></div>
-            
-            <input type="text" id="hourSearch" placeholder="Filtro Hora (ej: 14:22)..." oninput="searchByHour()">
+            <input type="text" id="hourSearch" style="margin-top:5px;" placeholder="Filtrar por hora (ej: 14:22)..." oninput="searchByHour()">
             <div id="search-results-hour" class="search-results"></div>
         </div>
 
+        <!-- LEYENDA -->
         <div class="section">
             <h3>4. Leyenda Táctica</h3>
             <div class="legend-grid">
                 <div class="legend-item"><div class="shape-off"></div> Pueblo OFF</div>
                 <div class="legend-item"><div class="shape-def"></div> Pueblo DEF</div>
+                <div class="legend-item"><div class="shape-none"></div> No Inf</div>
                 <div class="legend-item"><div style="background:#00ffff; width:10px; height:10px; border-radius:50%; border:1px solid white;"></div> Aliado</div>
                 <div class="legend-item"><span class="border-es">ORO</span> Español</div>
                 <div class="legend-item"><span class="border-lat">CIAN</span> Latino</div>
             </div>
         </div>
 
+        <!-- PLANIFICADOR -->
         <div class="section">
-            <h3>5. Planificador de Ataque</h3>
+            <h3>5. Planificador de Áreas (Multi)</h3>
             <select id="unitSpeed">
                 <option value="30" data-tag="ram">Ariete/Cata (30 m/c)</option>
                 <option value="35" data-tag="snob">Noble (35 m/c)</option>
                 <option value="18" data-tag="axe">Hachas/Lanzas (18 m/c)</option>
                 <option value="10" data-tag="light">Ligeras (10 m/c)</option>
             </select>
-            <div style="display:flex; gap:5px; margin-bottom:8px;">
-                <button class="btn" style="background: var(--btn-green)" id="btn-origin" onclick="setSelectMode('origin')">Sel. Origen</button>
+            <div style="display:flex; gap:5px;">
+                <button class="btn" style="background: var(--btn-green)" id="btn-origin" onclick="setSelectMode('origin')">Sel. Aliados</button>
                 <button class="btn" style="background: var(--btn-red)" id="btn-target" onclick="setSelectMode('target')">Sel. Objetivos</button>
             </div>
-            <div style="display:flex; gap:5px; margin-bottom:8px;">
+            
+            <div id="selection-summary"></div>
+            <div id="active-zones-list"></div>
+
+            <div style="display:flex; gap:5px; margin-top:10px;">
+                <button class="btn" style="background: var(--btn-orange); flex:2;" onclick="generateMassiveOrders()">Generar Órdenes</button>
+                <button class="btn" style="background: #444; flex:1;" onclick="clearSelectionAreas()">Limpiar Sel.</button>
+            </div>
+            <div style="display:flex; gap:5px; margin-top:8px;">
                 <input type="date" id="targetDate">
                 <input type="time" id="targetTime" step="1">
             </div>
-            <button class="btn" style="background: var(--accent); color:black;" onclick="generateMassiveOrders()">Generar Órdenes BBCode</button>
-            
-            <textarea id="bbcode-output" readonly placeholder="Resultados aquí..."></textarea>
+            <textarea id="bbcode-output" readonly placeholder="Resultados BBCode..."></textarea>
             <button class="btn" style="background: #2e7d32; margin-top:5px;" onclick="copyBB()">Copiar al Portapapeles</button>
-            <button class="btn" style="background: #555; margin-top:5px;" onclick="clearSelectedAreas()">Borrar Selección Mapa</button>
         </div>
     </div>
 
@@ -194,40 +212,28 @@
 
 <script>
     let map, enemyData = [], allyData = [], manualMarkers = [], layerMain = L.layerGroup();
-    let markersMap = {}, activeHighlightPlayer = null;
-    let sMode = null, sStart = null, sRect = null, oArea = null, tArea = null;
+    let markersMap = {}, activeHighlightCoord = null;
+    let sMode = null, sStart = null, sRect = null;
+    let activeRects = []; 
 
-    // Inicialización
+    // Inicialización del Mapa
     window.onload = function() {
-        map = L.map('map', { 
-            crs: L.CRS.Simple, 
-            minZoom: 0, 
-            maxZoom: 5, 
-            attributionControl: false 
-        }).setView([-450, 450], 1); 
-
+        map = L.map('map', { crs: L.CRS.Simple, minZoom: 0, maxZoom: 5, attributionControl: false }).setView([-450, 450], 1); 
         layerMain.addTo(map);
 
-        // Cuadrícula táctica
         for(let i=0; i<=1000; i+=100) {
             L.polyline([[0, i], [-1000, i]], {color: '#222', weight: 1, opacity: 0.5}).addTo(map);
             L.polyline([[-i, 0], [-i, 1000]], {color: '#222', weight: 1, opacity: 0.5}).addTo(map);
         }
 
-        // Set default date/time
         const now = new Date();
         document.getElementById('targetDate').value = now.toISOString().split('T')[0];
         document.getElementById('targetTime').value = "08:00:00";
 
-        // Eventos de ratón para selección masiva
         map.on('mousedown', (e) => {
             if (!sMode) return;
             sStart = e.latlng;
-            sRect = L.rectangle([sStart, sStart], {
-                color: sMode === 'origin' ? '#00ff00' : '#ff0000', 
-                weight: 3, 
-                fillOpacity: 0.2 
-            }).addTo(map);
+            sRect = L.rectangle([sStart, sStart], {color: sMode==='origin'?'#00ff00':'#ff0000', weight: 2, fillOpacity: 0.1, dashArray: '5, 5'}).addTo(map);
             map.on('mousemove', onMouseMove);
         });
 
@@ -238,38 +244,58 @@
 
     function onMouseUp() {
         if (!sMode) return;
-        if (sMode === 'origin') { if(oArea) map.removeLayer(oArea); oArea = sRect; }
-        else { if(tArea) map.removeLayer(tArea); tArea = sRect; }
-        sRect = null; sMode = null; 
-        map.dragging.enable(); 
-        map.off('mousemove', onMouseMove);
-        document.getElementById('btn-origin').classList.remove('btn-active');
-        document.getElementById('btn-target').classList.remove('btn-active');
+        activeRects.push({ rect: sRect, type: sMode });
+        sRect = null; sMode = null; map.dragging.enable(); map.off('mousemove', onMouseMove);
+        updateSelectionSummary();
     }
 
-    function setSelectMode(m) { 
-        sMode = m; 
-        map.dragging.disable(); 
-        document.getElementById('btn-origin').classList.toggle('btn-active', m === 'origin');
-        document.getElementById('btn-target').classList.toggle('btn-active', m === 'target');
+    function setSelectMode(m) { sMode = m; map.dragging.disable(); }
+
+    function clearSelectionAreas() {
+        activeRects.forEach(obj => map.removeLayer(obj.rect));
+        activeRects = [];
+        updateSelectionSummary();
     }
 
-    function clearSelectedAreas() {
-        if(oArea) { map.removeLayer(oArea); oArea = null; }
-        if(tArea) { map.removeLayer(tArea); tArea = null; }
+    function removeZone(index) {
+        map.removeLayer(activeRects[index].rect);
+        activeRects.splice(index, 1);
+        updateSelectionSummary();
     }
 
-    function timeToMinutes(t) {
-        let m = t.match(/(\d{1,2}):(\d{2})/);
-        return m ? parseInt(m[1]) * 60 + parseInt(m[2]) : null;
+    function updateSelectionSummary() {
+        const summaryDiv = document.getElementById('selection-summary');
+        const listDiv = document.getElementById('active-zones-list');
+        if (activeRects.length === 0) { summaryDiv.style.display = 'none'; listDiv.innerHTML = ''; return; }
+        const originRects = activeRects.filter(r => r.type === 'origin').map(r => r.rect);
+        const targetRects = activeRects.filter(r => r.type === 'target').map(r => r.rect);
+        const selectedAllies = allyData.filter(v => isPointInRects(v, originRects));
+        let allPotentialTargets = [...enemyData];
+        manualMarkers.forEach(m => { if (!allPotentialTargets.some(e => e.x === m.x && e.y === m.y)) allPotentialTargets.push({ x: m.x, y: m.y, player: 'Manual' }); });
+        const selectedEnemies = allPotentialTargets.filter(v => isPointInRects(v, targetRects));
+        const uniqueEnemyNames = [...new Set(selectedEnemies.map(e => e.player))].filter(n => n !== 'Manual');
+        summaryDiv.style.display = 'block';
+        summaryDiv.innerHTML = `<b style="color:#00ff00">Aliados:</b> ${selectedAllies.length} pueblos<br><b style="color:#ff4444">Enemigos:</b> ${selectedEnemies.length} pueblos<br><b style="color:orange">Objetivos:</b> ${uniqueEnemyNames.join(', ') || 'Ninguno'}`;
+        listDiv.innerHTML = '<b>Zonas Activas:</b>';
+        activeRects.forEach((obj, i) => {
+            const item = document.createElement('div');
+            item.className = 'zone-item';
+            item.style.borderLeftColor = obj.type === 'origin' ? '#00ff00' : '#ff0000';
+            item.innerHTML = `<span>Zona ${i+1} (${obj.type === 'origin' ? 'Aliada' : 'Enemiga'})</span><button class="zone-del-btn" onclick="removeZone(${i})">✖</button>`;
+            listDiv.appendChild(item);
+        });
     }
 
-    // Procesamiento de datos
+    function isPointInRects(v, rects) {
+        if (rects.length === 0) return false;
+        const latlng = L.latLng(-v.y, v.x);
+        return rects.some(r => r.getBounds().contains(latlng));
+    }
+
     function loadData() {
         const eText = document.getElementById('enemyBB').value;
         const aText = document.getElementById('allyBB').value;
-        enemyData = []; allyData = []; markersMap = {};
-
+        enemyData = []; allyData = [];
         const rows = eText.split(/\[\*\]|\[\*\*\]/);
         rows.forEach(r => {
             if (r.length < 5) return;
@@ -277,20 +303,18 @@
             let pName = pMatch ? pMatch[1] : "Desconocido";
             const lowRow = r.toLowerCase();
             const isLat = lowRow.includes('latino') || lowRow.includes('mexic') || lowRow.includes('argentin');
-            const isES = lowRow.includes('español') || lowRow.includes('oro') || lowRow.includes('españa');
+            const isES = lowRow.includes('español') || lowRow.includes('oro');
             const detectedHours = r.match(/(\d{1,2}:\d{2})/g) || [];
-            
             const coordRegex = /(\d{1,3})[|](\d{1,3})/g;
             let match;
             while ((match = coordRegex.exec(r)) !== null) {
                 let x = parseInt(match[1]), y = parseInt(match[2]);
                 let textAfter = r.substring(match.index, match.index + 120).toLowerCase();
-                let isOff = textAfter.includes('off') || textAfter.includes('ataque') || textAfter.includes('gorda');
-                let isDef = textAfter.includes('def') || textAfter.includes('apoyo') || textAfter.includes('deff');
-                enemyData.push({ x, y, player: pName, isOff, isDef, isES, isLat, detectedHours, note: r.replace(/\[.*?\]/g, '').trim() });
+                let isOff = textAfter.includes('off') || textAfter.includes('ataque');
+                let isDef = textAfter.includes('def') || textAfter.includes('apoyo');
+                enemyData.push({ x, y, player: pName, isOff, isDef, isES, isLat, detectedHours });
             }
         });
-
         const aMatches = [...aText.matchAll(/(\d{1,3})[|](\d{1,3})/g)];
         aMatches.forEach(m => allyData.push({ x: parseInt(m[1]), y: parseInt(m[2]) }));
         renderMarkers();
@@ -303,42 +327,59 @@
         matches.forEach(m => { manualMarkers.push({ x: parseInt(m[1]), y: parseInt(m[2]), color: color }); });
         document.getElementById('manualBB').value = "";
         renderMarkers();
+        updateSelectionSummary();
     }
 
-    function clearManualMarkers() { manualMarkers = []; renderMarkers(); }
+    function clearManualMarkers() { manualMarkers = []; renderMarkers(); updateSelectionSummary(); }
 
     function renderMarkers() {
         layerMain.clearLayers();
         enemyData.forEach(v => {
-            let shape = '<div style="width:10px;height:10px;background:white;border-radius:2px;"></div>';
-            if(v.isOff) shape = '<div class="v-off"></div>';
-            else if(v.isDef) shape = '<div class="v-def"></div>';
-            let bCol = v.isES ? '#ffd700' : (v.isLat ? '#00ffff' : 'transparent');
-            let hlt = (activeHighlightPlayer === v.player) ? 'outline: 4px solid white; outline-offset: 4px; z-index: 1000;' : '';
-            const icon = L.divIcon({ 
-                className: 'v-icon', 
-                html: `<div class="v-icon-container" style="border: ${v.isES||v.isLat?'4px':'1.5px'} solid ${bCol}; border-radius:5px; padding:4px; ${hlt}">${shape}</div>`, 
-                iconSize: [32, 32] 
-            });
+            let manual = manualMarkers.find(m => m.x === v.x && m.y === v.y);
+            let colorBorder = manual ? manual.color : (v.isES ? '#ffd700' : (v.isLat ? '#00ffff' : 'transparent'));
+            let borderW = (v.isES || v.isLat || manual) ? '3.5px' : '1px';
+            let shape = v.isOff ? '<div class="v-off"></div>' : (v.isDef ? '<div class="v-def"></div>' : '<div class="v-none"></div>');
+            let hlt = (activeHighlightCoord === `${v.x}|${v.y}`) ? 'outline: 4px solid white; outline-offset: 4px; z-index: 999;' : '';
+            const icon = L.divIcon({ className: 'v-icon', html: `<div class="v-icon-container" style="border: ${borderW} solid ${colorBorder}; padding:3px; ${hlt}">${shape}</div>`, iconSize: [28, 28] });
             L.marker([-v.y, v.x], {icon}).bindPopup(`<b>${v.player}</b> [${v.x}|${v.y}]<hr>${v.detectedHours.join(', ')}`).addTo(layerMain);
-            if(!markersMap[v.player]) markersMap[v.player] = [];
-            markersMap[v.player].push({x: v.x, y: v.y});
         });
         manualMarkers.forEach(v => {
-            const icon = L.divIcon({ 
-                className: 'v-icon', 
-                html: `<div class="v-icon-container" style="border: 2.5px solid ${v.color}; border-radius:4px; padding:4px;"><div class="v-manual" style="background:${v.color}"></div></div>`, 
-                iconSize: [30, 30] 
-            });
+            if (enemyData.some(e => e.x === v.x && e.y === v.y)) return;
+            const icon = L.divIcon({ className: 'v-icon', html: `<div class="v-icon-container" style="border: 2px solid ${v.color}; padding:3px;"><div style="width:11px;height:11px;background:${v.color};transform:rotate(45deg);border:1px solid #fff;"></div></div>`, iconSize: [26, 26] });
             L.marker([-v.y, v.x], {icon}).addTo(layerMain);
         });
         allyData.forEach(v => {
-            const icon = L.divIcon({ className: 'v-icon', html: `<div class="v-ally"></div>`, iconSize: [18, 18] });
+            const icon = L.divIcon({ className: 'v-icon', html: `<div class="v-ally"></div>`, iconSize: [16, 16] });
             L.marker([-v.y, v.x], {icon}).addTo(layerMain);
         });
     }
 
-    // Funciones de Búsqueda
+    function searchPlayer() {
+        const q = document.getElementById('playerSearch').value.toLowerCase();
+        const res = document.getElementById('search-results-player');
+        if (q.length < 2) { res.style.display='none'; return; }
+        res.innerHTML = ''; res.style.display = 'block';
+        let players = [...new Set(enemyData.map(e => e.player))].filter(p => p.toLowerCase().includes(q));
+        players.forEach(pName => {
+            let pData = enemyData.filter(e => e.player === pName);
+            let item = document.createElement('div');
+            item.className = 'search-item';
+            item.innerHTML = `<b onclick="focusOnPlayer('${pName}')">${pName} (${pData.length} pueblos)</b>`;
+            let vList = document.createElement('div'); vList.className = 'village-list';
+            pData.forEach(v => {
+                let vBtn = document.createElement('span'); vBtn.className = 'village-btn'; vBtn.innerText = `${v.x}|${v.y}`;
+                vBtn.onclick = () => { activeHighlightCoord=`${v.x}|${v.y}`; renderMarkers(); map.setView([-v.y, v.x], 4); };
+                vList.appendChild(vBtn);
+            });
+            item.appendChild(vList); res.appendChild(item);
+        });
+    }
+
+    function focusOnPlayer(n) {
+        let pts = enemyData.filter(e => e.player === n);
+        if (pts.length) map.fitBounds(L.latLngBounds(pts.map(x => [-x.y, x.x])).pad(0.5));
+    }
+
     function searchByHour() {
         const q = document.getElementById('hourSearch').value;
         const res = document.getElementById('search-results-hour');
@@ -348,60 +389,42 @@
         let found = [];
         enemyData.forEach(e => {
             e.detectedHours.forEach(h => {
-                if (Math.abs(timeToMinutes(h) - qM) <= 60) {
-                    if (!found.some(x => x.name === e.player)) found.push({name: e.player, time: h});
-                }
+                if (Math.abs(timeToMinutes(h) - qM) <= 60 && !found.some(x => x.name === e.player)) found.push({name: e.player, time: h});
             });
         });
         found.forEach(p => {
             let d = document.createElement('div'); d.className='search-item'; 
-            d.innerHTML = `<span style="background:orange; color:black; padding:1px 4px; border-radius:2px; font-weight:bold; margin-right:5px;">${p.time}</span> ${p.name}`;
-            d.onclick = () => { activeHighlightPlayer=p.name; renderMarkers(); focusOnPlayer(p.name); };
+            d.innerHTML = `<span style="background:orange;color:black;padding:2px 4px;border-radius:2px;font-weight:bold;margin-right:5px;">${p.time}</span> ${p.name}`;
+            d.onclick = () => focusOnPlayer(p.name);
             res.appendChild(d);
         });
     }
 
-    function searchPlayer() {
-        const q = document.getElementById('playerSearch').value.toLowerCase();
-        const res = document.getElementById('search-results-player');
-        if (q.length < 2) { res.style.display='none'; return; }
-        res.innerHTML = ''; res.style.display = 'block';
-        let ps = [...new Set(enemyData.map(e => e.player))].filter(p => p.toLowerCase().includes(q));
-        ps.forEach(p => {
-            let d = document.createElement('div'); d.className='search-item'; d.innerText=p;
-            d.onclick = () => { activeHighlightPlayer=p; renderMarkers(); focusOnPlayer(p); };
-            res.appendChild(d);
-        });
+    function timeToMinutes(t) {
+        let m = t.match(/(\d{1,2}):(\d{2})/);
+        return m ? parseInt(m[1]) * 60 + parseInt(m[2]) : null;
     }
 
-    function focusOnPlayer(n) {
-        let p = enemyData.find(e => e.player === n);
-        if (p) map.setView([-p.y, p.x], 3);
-    }
-
-    // Generador de Órdenes
     function generateMassiveOrders() {
-        if (!oArea || !tArea) return alert("Dibuja las áreas de Origen y Objetivo en el mapa.");
+        const originRects = activeRects.filter(r => r.type === 'origin').map(r => r.rect);
+        const targetRects = activeRects.filter(r => r.type === 'target').map(r => r.rect);
+        if (originRects.length === 0 || targetRects.length === 0) return alert("Dibuja áreas verdes y rojas.");
+        let allPotentialTargets = [...enemyData];
+        manualMarkers.forEach(m => { if (!allPotentialTargets.some(e => e.x === m.x && e.y === m.y)) allPotentialTargets.push({ x: m.x, y: m.y, player: 'Manual' }); });
+        const targets = allPotentialTargets.filter(v => isPointInRects(v, targetRects));
+        const sources = allyData.filter(v => isPointInRects(v, originRects));
+        if (!targets.length || !sources.length) return alert("No hay pueblos suficientes.");
         const speed = parseFloat(document.getElementById('unitSpeed').value);
         const unitTag = document.getElementById('unitSpeed').options[document.getElementById('unitSpeed').selectedIndex].getAttribute('data-tag');
         const targetDT = new Date((document.getElementById('targetDate').value + ' ' + document.getElementById('targetTime').value).replace(/-/g, "/"));
-        const bO = oArea.getBounds(), bT = tArea.getBounds();
-        
-        const targets = enemyData.filter(v => v.x >= bT.getWest() && v.x <= bT.getEast() && v.y >= Math.abs(bT.getNorth()) && v.y <= Math.abs(bT.getSouth()));
-        const sources = allyData.filter(v => v.x >= bO.getWest() && v.x <= bO.getEast() && v.y >= Math.abs(bO.getNorth()) && v.y <= Math.abs(bO.getSouth()));
-
-        if(targets.length === 0 || sources.length === 0) return alert("No hay pueblos en las áreas seleccionadas.");
-
         let finalBB = "";
         targets.forEach(t => {
-            finalBB += `[size=12][b]Plan for:[/b] [coord]${t.x}|${t.y}[/coord]\n`;
-            finalBB += `[b]Landing Time:[/b] ${targetDT.toLocaleString()}[/size]\n\n`;
-            finalBB += `[table][**]Unit[||]From[||]Priority[||]Launch Time[||]Command[||]Status[/**]\n`;
+            finalBB += `[size=12][b]Plan for:[/b] [coord]${t.x}|${t.y}[/coord] (${t.player})\n[b]Landing Time:[/b] ${targetDT.toLocaleString()}[/size]\n\n[table][**]Unit[||]From[||]Launch Time[||]Command[/**]\n`;
             sources.forEach(s => {
                 const dist = Math.sqrt(Math.pow(t.x - s.x, 2) + Math.pow(t.y - s.y, 2));
                 const launch = new Date(targetDT.getTime() - (dist * speed * 60 * 1000));
                 const link = `https://es100.guerrastribales.es/game.php?screen=place&x=${t.x}&y=${t.y}`;
-                finalBB += `[*][unit]${unitTag}[/unit][|] [coord]${s.x}|${s.y}[/coord] [|][b][color=#ff0000][/color][/b][|]${launch.toLocaleString()}[|][url=${link}]Send[/url][|]\n`;
+                finalBB += `[*][unit]${unitTag}[/unit][|] [coord]${s.x}|${s.y}[/coord] [|]${launch.toLocaleString()}[|][url=${link}]Send[/url]\n`;
             });
             finalBB += `[/table]\n\n`;
         });
@@ -412,7 +435,7 @@
         const copyText = document.getElementById("bbcode-output");
         copyText.select();
         document.execCommand("copy");
-        alert("BBCode copiado.");
+        alert("BBCode copiado al portapapeles.");
     }
 </script>
 
